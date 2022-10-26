@@ -1,0 +1,34 @@
+{
+  "name": "nuux-server",
+  "version": "0.0.0",
+  "description": "",
+  "private": true,
+  "author": "jds web developer",
+  "scripts": {
+    "start": "nodemon ./bin/www"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "~1.4.4",
+    "cors": "^2.8.5",
+    "debug": "~2.6.9",
+    "dotenv": "^16.0.3",
+    "ejs": "~2.6.1",
+    "express": "~4.16.1",
+    "http-errors": "~1.6.3",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.7.0",
+    "morgan": "~1.9.1",
+    "nodemon": "^2.0.20"
+  },
+  "engines": {
+    "node": "16.15.0"
+  },
+  "jshintConfig": {
+    "esversion": 9,
+    "strict": "implied",
+    "devel": true,
+    "node": true,
+    "globals": {}
+  }
+}
