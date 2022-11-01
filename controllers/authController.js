@@ -26,8 +26,11 @@ exports.signupUser = async (req, res, next) => {
     });
     const result = await user.save();
     res.status(200).json({
-      message: "User created",
-      user   : { id: result._id, email: result.email },
+      message: 'Success Registration',
+      user: {
+        id: result._id,
+        email: result.email
+      },
     });
   } catch (err) {
     if (!err.statusCode) {
@@ -60,7 +63,10 @@ exports.signinUser = async (req, res, next) => {
     const token = jwt.sign({ email: loadedUser.email }, process.env.SECRET , {
       expiresIn: "20m",
     });
-    res.status(200).json({ token: token });
+    res.status(200).json({
+      message: 'Success Login',
+      token: token
+    });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
