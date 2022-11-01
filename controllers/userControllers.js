@@ -1,150 +1,157 @@
 const bcrypt = require("bcryptjs");
-const User = require("../models/userModel");
-const jwt = require("jsonwebtoken");
+const salt   = bcrypt.genSaltSync(10);
+const User   = require("../models/userModel");
+const jwt    = require("jsonwebtoken");
 
 module.exports = {
   signIn: (req, res) => {
-    User
-      .findOne({
-        $or: [{
-            fullname: req.body.fullname
-          },
-          {
-            email: req.body.email
-          }
-        ]
-      })
-      .then(userData => {
+    User.findOne({
+      email: req.body.email,
+    })
+      .then((userData) => {
         if (userData) {
-          let passwordCheck = bcrypt.compareSync(req.body.password, userData.password)
+          let hash = bcrypt.hashSync(req.body.password, salt);
+          let passwordCheck = bcrypt.compare(userData.password, hash);
+
           if (passwordCheck) {
-            let token = jwt.sign({
-                email: userData.email
+            let token = jwt.sign(
+              {
+                email: userData.email,
               },
-              process.env.SECRET, {
+              process.env.SECRET,
+              {
                 expiresIn: "20m",
-              })
+              }
+            );
             res.status(200).json({
-              message: 'Sign In Successful',
+              message: "Sign In Successful",
               user: {
                 id: userData._id,
                 fullname: userData.fullname,
                 email: userData.email,
+                subscription: userData.subscription,
               },
-              token: token
-            })
+              token: token,
+            });
           } else {
             return res.status(400).json({
-              message: 'Wrong Password To Sign In!'
-            })
+              message: "Wrong Password To Sign In!",
+            });
           }
         } else {
           res.status(400).json({
-            message: 'Username With This Email Not Found!'
-          })
+            message: "Username With This Email Not Found!",
+          });
         }
       })
-      .catch(err => {
+      .catch((err) => {
         res.status(400).json({
           message: "Cannot Get User",
-          err
-        })
-      })
+          err,
+        });
+      });
   },
   signUp: (req, res) => {
+    let hash = bcrypt.hashSync(req.body.password, salt);
     User.create({
-        fullname: req.body.fullname,
-        email: req.body.email,
-        password: req.body.password,
-      })
-      .then(data => {
-        let token = jwt.sign({
-          id: data._id
-        }, process.env.SECRET);
+      fullname: req.body.fullname,
+      email: req.body.email,
+      password: hash,
+      subscription: null,
+    })
+      .then((data) => {
+        let token = jwt.sign(
+          {
+            id: data._id,
+          },
+          process.env.SECRET,
+          {
+            expiresIn: "20m",
+          }
+        );
 
-        res.status(200)
-          .json({
-            message: 'User Succesfully Created',
-            user: {
-              id: data._id,
-              fullname: data.fullname,
-              email: data.email,
-            },
-            token: token
-          })
+        res.status(200).json({
+          message: "User Succesfully Created",
+          user: {
+            id: data._id,
+            fullname: data.fullname,
+            email: data.email,
+            subscription: data.subscription,
+          },
+          token: token,
+        });
       })
-      .catch(err => {
-        res.status(400)
-          .json({
-            message: 'Failed To Register User',
-            err
-          })
-      })
+      .catch((err) => {
+        if (err.code === 11000) {
+          res.status(403).json({
+            message: "Email Already Registered",
+          });
+        } else {
+          res.status(400).json({
+            message: "Failed To Register User",
+          });
+        }
+      });
   },
   findAll: (req, res) => {
     User.find()
       .exec()
-      .then(data => {
+      .then((data) => {
         res.status(200).json({
           message: "Succeed Get All Users",
-          data
-        })
+          data,
+        });
       })
-      .catch(err => {
+      .catch((err) => {
         res.status(400).json({
           message: "Failed Get All Users!",
-        })
-      })
+        });
+      });
   },
   findById: (req, res) => {
     User.findOne({
-        _id: req.params.id
-      })
+      _id: req.params.id,
+    })
       .exec()
-      .then(data => {
+      .then((data) => {
         res.status(200).json({
           message: "Succeed Get User By Id",
-          data
-        })
+          data,
+        });
       })
-      .catch(err => {
+      .catch((err) => {
         res.status(400).json({
-          message: "Failed To Get User By Id!"
-        })
-      })
+          message: "Failed To Get User By Id!",
+        });
+      });
   },
   update: (req, res) => {
-    User.findByIdAndUpdate(
-        req.params.id,
-        req.body, {
-          new: true
-        }
-      )
+    User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    })
       .then((data) => {
         res.status(200).json({
           message: "Succeed To Update User",
-          data
-        })
+          data,
+        });
       })
-      .catch(err => {
+      .catch((err) => {
         res.status(400).json({
-          message: "Failed to Update!"
-        })
-      })
+          message: "Failed to Update!",
+        });
+      });
   },
   remove: (req, res) => {
-    User.findByIdAndRemove(
-        req.params.id
-      )
+    User.findByIdAndRemove(req.params.id)
       .then(() => {
         res.status(200).json({
-          message: "Succeed To Delete"
-        })
+          message: "Succeed To Delete",
+        });
       })
       .catch(() => {
         res.status(400).json({
-          message: "Failed To Delete!"
-        })
-      })
-  }
-}
+          message: "Failed To Delete!",
+        });
+      });
+  },
+};

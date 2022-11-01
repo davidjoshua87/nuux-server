@@ -15,7 +15,7 @@ const app = express();
 //mongoose connection
 const usermongo = process.env.USERMONGO;
 const passmongo = process.env.PASSMONGO;
-const dbUrl     = `mongodb+srv://${usermongo}:${passmongo}@cluster0.rriocxj.mongodb.net/nuxt-project?retryWrites=true&w=majority`;
+const dbUrl     = `mongodb+srv://${usermongo}:${passmongo}@cluster0.nueon8h.mongodb.net/nuxt-project?retryWrites=true&w=majority`;
 mongoose.connect(dbUrl, {
   useNewUrlParser   : true,
   useUnifiedTopology: true,
