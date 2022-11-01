@@ -15,6 +15,10 @@ const UserSchema = new Schema(
       type: String,
       required: true,
     },
+    subscription: {
+      type: String,
+      required: true,
+    }
   },
   { timestamps: true }
 );

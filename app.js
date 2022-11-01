@@ -7,7 +7,7 @@ const logger       = require('morgan');
 const mongoose     = require("mongoose");
 
 // routes
-const authRouter = require("./routes/authRouter");
+const userRouter = require("./routes/users");
 const indexRouter = require("./routes/index");
 
 const app = express();
@@ -47,7 +47,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/api/auth/", authRouter);
+app.use("/api/user/", userRouter);
 app.use("/api/", indexRouter);
 
 // catch 404 and forward to error handler
