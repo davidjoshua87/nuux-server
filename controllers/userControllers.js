@@ -1,7 +1,8 @@
-const bcrypt = require("bcryptjs");
-const salt   = bcrypt.genSaltSync(10);
-const User   = require("../models/userModel");
-const jwt    = require("jsonwebtoken");
+const bcrypt     = require("bcrypt");
+const saltRounds = 10;
+const salt       = bcrypt.genSaltSync(saltRounds);
+const User       = require("../models/userModel");
+const jwt        = require("jsonwebtoken");
 
 module.exports = {
   signIn: (req, res) => {
@@ -10,13 +11,12 @@ module.exports = {
     })
       .then((userData) => {
         if (userData) {
-          let hash = bcrypt.hashSync(req.body.password, salt);
-          let passwordCheck = bcrypt.compareSync(userData.password, hash);
+          let passwordCheck = bcrypt.compareSync(req.body.password, userData.password);
 
           if (passwordCheck) {
             let token = jwt.sign(
               {
-                email: userData.email,
+                id: userData._id,
               },
               process.env.SECRET,
               {
