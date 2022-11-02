@@ -11,7 +11,7 @@ module.exports = {
       .then((userData) => {
         if (userData) {
           let hash = bcrypt.hashSync(req.body.password, salt);
-          let passwordCheck = bcrypt.compare(userData.password, hash);
+          let passwordCheck = bcrypt.compareSync(userData.password, hash);
 
           if (passwordCheck) {
             let token = jwt.sign(
