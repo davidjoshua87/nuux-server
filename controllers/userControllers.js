@@ -162,6 +162,7 @@ module.exports = {
         id: loadedUser._id,
         fullname: loadedUser.fullname,
         email: loadedUser.email,
+        subscription: loadedUser.subscription
       },
     });
   }
