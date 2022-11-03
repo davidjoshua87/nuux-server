@@ -10,7 +10,7 @@ const {
 } = require("../controllers/userControllers");
 const { auth } = require("../middleware/isAuth");
 
-user.get('/', auth, findAll)
+user.get('/', findAll)
     .get('/:id', auth, findById)
     .post('/signup', signUp)
     .post('/signin', signIn)
