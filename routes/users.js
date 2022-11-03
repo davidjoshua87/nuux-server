@@ -3,6 +3,7 @@ const user    = express.Router();
 const {
     signIn,
     signUp,
+    getUser,
     findAll,
     findById,
     update,
@@ -10,7 +11,8 @@ const {
 } = require("../controllers/userControllers");
 const { auth } = require("../middleware/isAuth");
 
-user.get('/', findAll)
+user.get('/', auth, findAll)
+    .get('/me', auth, getUser)
     .get('/:id', auth, findById)
     .post('/signup', signUp)
     .post('/signin', signIn)

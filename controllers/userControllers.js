@@ -3,6 +3,7 @@ const saltRounds = 10;
 const salt       = bcrypt.genSaltSync(saltRounds);
 const User       = require("../models/userModel");
 const jwt        = require("jsonwebtoken");
+let loadedUser;
 
 module.exports = {
   signIn: (req, res) => {
@@ -11,6 +12,7 @@ module.exports = {
     })
       .then((userData) => {
         if (userData) {
+          loadedUser = userData;
           let passwordCheck = bcrypt.compareSync(req.body.password, userData.password);
 
           if (passwordCheck) {
@@ -154,4 +156,13 @@ module.exports = {
         });
       });
   },
+  getUser: (req, res) => {
+    res.status(200).json({
+      user: {
+        id: loadedUser._id,
+        fullname: loadedUser.fullname,
+        email: loadedUser.email,
+      },
+    });
+  }
 };
