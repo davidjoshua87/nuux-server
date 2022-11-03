@@ -12,7 +12,7 @@ const {
 const { auth } = require("../middleware/isAuth");
 
 user.get('/', auth, findAll)
-    .get('/me', auth, getUser)
+    .get('/me', getUser)
     .get('/:id', auth, findById)
     .post('/signup', signUp)
     .post('/signin', signIn)
