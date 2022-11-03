@@ -8,6 +8,7 @@ const mongoose     = require("mongoose");
 
 // routes
 const userRouter = require("./routes/users");
+const musicRouter = require("./routes/musics");
 const indexRouter = require("./routes/index");
 
 const app = express();
@@ -48,6 +49,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/user/", userRouter);
+app.use("/api/music/", musicRouter);
 app.use("/api/", indexRouter);
 
 // catch 404 and forward to error handler

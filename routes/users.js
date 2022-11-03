@@ -10,7 +10,6 @@ const {
 } = require("../controllers/userControllers");
 const { auth } = require("../middleware/isAuth");
 
-/* GET users listing. */
 user.get('/', auth, findAll)
     .get('/:id', auth, findById)
     .post('/signup', signUp)
