@@ -3,7 +3,6 @@ const saltRounds = 10;
 const salt       = bcrypt.genSaltSync(saltRounds);
 const User       = require("../models/userModel");
 const jwt        = require("jsonwebtoken");
-let loadedUser;
 
 module.exports = {
   signIn: (req, res) => {
@@ -12,8 +11,10 @@ module.exports = {
     })
       .then((userData) => {
         if (userData) {
-          loadedUser = userData;
-          let passwordCheck = bcrypt.compareSync(req.body.password, userData.password);
+          let passwordCheck = bcrypt.compareSync(
+            req.body.password,
+            userData.password
+          );
 
           if (passwordCheck) {
             let token = jwt.sign(
@@ -22,7 +23,7 @@ module.exports = {
               },
               process.env.SECRET,
               {
-                expiresIn: "20m",
+                expiresIn: "30m",
               }
             );
             res.status(200).json({
@@ -68,7 +69,7 @@ module.exports = {
           },
           process.env.SECRET,
           {
-            expiresIn: "20m",
+            expiresIn: "30m",
           }
         );
 
@@ -130,6 +131,8 @@ module.exports = {
   update: (req, res) => {
     User.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
+      upsert: true,
+      rawResult: true,
     })
       .then((data) => {
         res.status(200).json({
@@ -157,13 +160,35 @@ module.exports = {
       });
   },
   getUser: (req, res) => {
-    res.status(200).json({
-      user: {
-        id: loadedUser._id,
-        fullname: loadedUser.fullname,
-        email: loadedUser.email,
-        subscription: loadedUser.subscription
-      },
-    });
-  }
+    const token      = req.headers.authorization;
+    const tokenSplit = token.split(" ")[1];
+    const decoded    = jwt.verify(tokenSplit, process.env.SECRET);
+
+    if (!token)
+      res.status(401).json({
+        message: "Authorization Token Not Found",
+      });
+
+    User.findOne({
+      _id: decoded.id,
+    })
+      .then((user) => {
+        const userDetails = {
+          id: user._id,
+          fullname: user.fullname,
+          email: user.email,
+          password: user.password,
+          subscription: user.subscription,
+        };
+        res.status(200).json({
+          user: userDetails,
+        });
+      })
+      .catch((err) => {
+        res.status(403).json({
+          message: "User Not Found",
+          error: err,
+        });
+      });
+  },
 };
