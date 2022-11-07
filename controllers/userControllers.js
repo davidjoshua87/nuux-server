@@ -60,7 +60,13 @@ module.exports = {
       fullname: req.body.fullname,
       email: req.body.email,
       password: hash,
-      subscription: null,
+      phoneNumber: req.body.phoneNumber,
+      address: req.body.address,
+      province: req.body.province,
+      zipCode: req.body.zipCode,
+      country: req.body.country,
+      language: req.body.language,
+      subscription: req.body.subscription
     })
       .then((data) => {
         let token = jwt.sign(
