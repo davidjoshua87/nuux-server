@@ -1,8 +1,8 @@
-const bcrypt         = require("bcrypt");
-const saltRounds     = 10;
-const salt           = bcrypt.genSaltSync(saltRounds);
-const User           = require("../models/userModel");
-const jwt            = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
+const salt = bcrypt.genSaltSync(saltRounds);
+const User = require("../models/userModel");
+const jwt = require("jsonwebtoken");
 const { cloudinary } = require("../helpers/cloudinary");
 
 module.exports = {
@@ -68,13 +68,14 @@ module.exports = {
       fullname: req.body.fullname,
       email: req.body.email,
       password: hash,
+      avatar: req.body.avatar,
       phoneNumber: req.body.phoneNumber,
       address: req.body.address,
       province: req.body.province,
       zipCode: req.body.zipCode,
       country: req.body.country,
       language: req.body.language,
-      subscription: req.body.subscription
+      subscription: req.body.subscription,
     })
       .then((data) => {
         let token = jwt.sign(
@@ -94,6 +95,7 @@ module.exports = {
             fullname: data.fullname,
             email: data.email,
             password: hash,
+            avatar: data.avatar,
             phoneNumber: data.phoneNumber,
             address: data.address,
             province: data.province,
@@ -158,7 +160,7 @@ module.exports = {
     } else {
       data = req.body;
     }
-    
+
     User.findByIdAndUpdate(req.params.id, data, {
       new: true,
       upsert: true,
@@ -182,10 +184,10 @@ module.exports = {
       resource_type: "auto",
       unsigned: true,
       upload_preset: process.env.PRESET_NAME,
-      public_id: req.body.title,
-      tags: req.body.title
+      public_id: 'avatar',
+      tags: 'avatar',
     };
-		const image = await cloudinary.uploader.upload(file, options);
+    const image = await cloudinary.uploader.upload(file, options);
     const imgUrl = image.secure_url;
     req.body.avatar = imgUrl;
     const data = req.body;
@@ -221,9 +223,9 @@ module.exports = {
       });
   },
   getUser: (req, res) => {
-    const token      = req.headers.authorization;
+    const token = req.headers.authorization;
     const tokenSplit = token.split(" ")[1];
-    const decoded    = jwt.verify(tokenSplit, process.env.SECRET);
+    const decoded = jwt.verify(tokenSplit, process.env.SECRET);
 
     if (!token)
       res.status(401).json({
@@ -239,6 +241,7 @@ module.exports = {
           fullname: user.fullname,
           email: user.email,
           password: user.password,
+          avatar: user.avatar,
           phoneNumber: user.phoneNumber,
           address: user.address,
           province: user.province,
