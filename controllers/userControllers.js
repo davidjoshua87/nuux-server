@@ -149,7 +149,15 @@ module.exports = {
       });
   },
   update: (req, res) => {
-    User.findByIdAndUpdate(req.params.id, req.body, {
+    let data;
+    if (req.body.password !== undefined) {
+      let hash = bcrypt.hashSync(req.body.password, salt);
+      req.body.password = hash;
+      data = req.body;
+    } else {
+      data = req.body;
+    }
+    User.findByIdAndUpdate(req.params.id, data, {
       new: true,
       upsert: true,
       rawResult: true,
