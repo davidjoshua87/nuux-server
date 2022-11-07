@@ -24,30 +24,31 @@ const UserSchema = new Schema(
     },
     phoneNumber: {
       type: String,
-      required: true,
+      required: false,
     },
     address: {
       type: String,
-      required: true,
+      required: false,
     },
     province: {
       type: String,
-      required: true,
+      required: false,
     },
     zipCode: {
       type: String,
-      required: true,
+      required: false,
     },
     country: {
       type: String,
-      required: true,
+      required: false,
     },
     language: {
       type: String,
-      required: true,
+      required: false,
     },
     subscription: {
       type: String,
+      required: false,
     }
   },
   { timestamps: true }
