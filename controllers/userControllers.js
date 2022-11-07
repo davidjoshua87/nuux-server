@@ -1,8 +1,9 @@
-const bcrypt     = require("bcrypt");
-const saltRounds = 10;
-const salt       = bcrypt.genSaltSync(saltRounds);
-const User       = require("../models/userModel");
-const jwt        = require("jsonwebtoken");
+const bcrypt         = require("bcrypt");
+const saltRounds     = 10;
+const salt           = bcrypt.genSaltSync(saltRounds);
+const User           = require("../models/userModel");
+const jwt            = require("jsonwebtoken");
+const { cloudinary } = require("../helpers/cloudinary");
 
 module.exports = {
   signIn: (req, res) => {
@@ -157,6 +158,38 @@ module.exports = {
     } else {
       data = req.body;
     }
+    
+    User.findByIdAndUpdate(req.params.id, data, {
+      new: true,
+      upsert: true,
+      rawResult: true,
+    })
+      .then((data) => {
+        res.status(200).json({
+          message: "Succeed To Update User",
+          data,
+        });
+      })
+      .catch((err) => {
+        res.status(400).json({
+          message: "Failed to Update!",
+        });
+      });
+  },
+  updateImage: async (req, res) => {
+    const file = req.file.path;
+    const options = {
+      resource_type: "auto",
+      unsigned: true,
+      upload_preset: process.env.PRESET_NAME,
+      public_id: req.body.title,
+      tags: req.body.title
+    };
+		const image = await cloudinary.uploader.upload(file, options);
+    const imgUrl = image.secure_url;
+    req.body.avatar = imgUrl;
+    const data = req.body;
+
     User.findByIdAndUpdate(req.params.id, data, {
       new: true,
       upsert: true,

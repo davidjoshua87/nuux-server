@@ -1,6 +1,7 @@
 const express = require('express');
 const user    = express.Router();
-const auth    = require("../middleware/auth");
+const auth = require("../middleware/auth");
+const upload = require("../helpers/multer");
 const {
     signIn,
     signUp,
@@ -8,6 +9,7 @@ const {
     findAll,
     findById,
     update,
+    updateImage,
     remove
 } = require("../controllers/userControllers");
 
@@ -17,6 +19,7 @@ user.get('/', auth, findAll)
     .post('/signup', signUp)
     .post('/signin', signIn)
     .put('/edit/:id', auth, update)
+    .put('/upload/:id', auth, upload.single('image'), updateImage)
     .delete('/:id', auth, remove);
 
 module.exports = user;
