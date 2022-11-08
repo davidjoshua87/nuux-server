@@ -180,12 +180,13 @@ module.exports = {
   },
   updateImage: async (req, res) => {
     const file = req.file.path;
+    const filename = req.file.originalname.split(".")[0];
     const options = {
       resource_type: "auto",
       unsigned: true,
       upload_preset: process.env.PRESET_NAME,
-      public_id: 'avatar',
-      tags: 'avatar',
+      public_id: filename,
+      tags: filename,
     };
     const image = await cloudinary.uploader.upload(file, options);
     const imgUrl = image.secure_url;
