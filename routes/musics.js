@@ -7,7 +7,7 @@ const {
   lookupMusic
 } = require("../controllers/musicControllers");
 
-music.get("/search/:term/song", auth, playlistMusic)
+music.get("/playlist/:term/song", auth, playlistMusic)
   .get("/search/:term/song", auth, searchMusic)
   .get("/lookup/:id", auth, lookupMusic);
 
