@@ -1,9 +1,30 @@
 const {
+  playlist,
   search,
   lookup
 } = require("../helpers/itunes");
 
 module.exports = {
+  playlistMusic: (req, res) => {
+    let query = req.params.term;
+
+    playlist(query)
+      .then((result) => {
+        let data = result.data.results.filter(i => i.kind == "song");
+        res.status(200).json({
+          message: "Playlist Music Successfull",
+          data: data,
+          resultCount: data.length
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(400).json({
+          message: "Failed To Playlist Music",
+          error: err,
+        });
+      });
+  },
   searchMusic: (req, res) => {
     let query = req.params.term;
 
