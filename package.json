@@ -1,7 +1,8 @@
 {
   "name": "mux-server",
   "version": "1.0.0",
-  "description": "",
+  "description": "Mux is the only music you need.",
+  "keywords": "Mux, music, online, listen, stream, play, digital, album, artist, playlist",
   "private": true,
   "author": "jds web developer",
   "scripts": {
